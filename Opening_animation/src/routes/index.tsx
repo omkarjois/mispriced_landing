@@ -2033,21 +2033,44 @@ function OpeningSequence({ onComplete }: { onComplete: () => void }) {
                 transition={cardTransition}
                 className="w-full h-full relative"
               >
-                {/* Question Input Card */}
-                <div className="absolute inset-0 w-full h-full flex items-center backdrop-blur-xl rounded-[16px] sm:rounded-[16px] md:rounded-[20px] border border-white/12 bg-[#15161a]/90 shadow-xl hover:border-white/20 pr-4 sm:pr-5 gap-3 sm:gap-3.5 select-none overflow-hidden">
-                  {/* Company Logo slot */}
-                  <div className="flex items-center justify-center shrink-0 h-full aspect-square overflow-hidden">
-                    <CompanyLogo ticker={card.ticker} className="h-full w-full object-contain" />
+                {/* Question Input Card - Modern AI Chat Composer */}
+                <div className="absolute inset-0 w-full h-full flex items-center rounded-[16px] border border-white/10 bg-[#191b20] shadow-[0_4px_24px_rgba(0,0,0,0.45),0_1px_2px_rgba(0,0,0,0.3)] select-none overflow-hidden">
+                  {/* Attached Ticker Logo Context Chip */}
+                  <div className="flex items-center justify-center shrink-0 w-[40px] h-[40px] rounded-[10px] bg-white/[0.06] border border-white/[0.08] overflow-hidden ml-2 sm:ml-2.5">
+                    <CompanyLogo
+                      ticker={card.ticker}
+                      containerClassName="w-full h-full flex items-center justify-center p-1.5"
+                      className="h-full w-full object-contain"
+                    />
                   </div>
 
                   {/* Stock Question Text */}
-                  <div className="min-w-0 flex items-center flex-1 pr-1 sm:pr-2 overflow-hidden">
+                  <div className="min-w-0 flex items-center flex-1 px-2.5 sm:px-3 overflow-hidden">
                     <span className="font-display font-light text-[1.08rem] sm:text-[1.18rem] md:text-[1.26rem] text-white tracking-tight whitespace-nowrap overflow-hidden text-ellipsis leading-none">
                       {displayText}
                       {showCursor && (
                         <span className="inline-block bg-white ml-2 w-[2.5px] h-[1.05em] animate-pulse rounded-[1px] align-middle -translate-y-[1px]" />
                       )}
                     </span>
+                  </div>
+
+                  {/* Decorative Composer Send Button */}
+                  <div
+                    aria-hidden="true"
+                    className="flex items-center justify-center shrink-0 w-[28px] h-[28px] rounded-full bg-white/[0.08] border border-white/[0.06] text-white/60 mr-2 sm:mr-2.5 pointer-events-none select-none"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="14"
+                      height="14"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M12 19V5M5 12l7-7 7 7" />
+                    </svg>
                   </div>
                 </div>
               </motion.div>
