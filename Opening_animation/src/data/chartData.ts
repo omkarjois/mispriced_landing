@@ -15,26 +15,26 @@ export const EMOTION_ITEMS: EmotionItem[] = [
 // Unified timing budget configuration (all timestamps derived from these constants)
 export const TIMING_CONFIG = {
   desktop: {
-    FURNITURE_FADE: 0.3,
-    DRAW_START: 0.1,
-    DRAW_DURATION: 2.7, // Draws continuously 0.10s -> 2.80s
-    WORD_FADE_DURATION: 0.28,
-    TAG_FADE_LEAD: 0.4, // Tag & ticker crossfade start at 2.40s
-    TICKER_CROSSFADE_DURATION: 0.25,
-    CENTER_START: 2.75, // Seamless trigger right as line draw completes
-    CENTER_DURATION: 0.65, // Snappy, crisp reveal (fully sharp by 3.40s)
-    TOTAL_BUDGET: 5.0, // Clean hold 3.40s -> 5.00s
+    FURNITURE_FADE: 0.25,
+    DRAW_START: 0.08,
+    DRAW_DURATION: 1.95, // Draws continuously 0.08s -> 2.03s
+    WORD_FADE_DURATION: 0.22,
+    TAG_FADE_LEAD: 0.30, // Tag & ticker crossfade start at 1.73s
+    TICKER_CROSSFADE_DURATION: 0.20,
+    CENTER_START: 2.00, // Seamless trigger right as line draw completes
+    CENTER_DURATION: 0.48, // Snappy, crisp reveal (fully sharp by 2.48s)
+    TOTAL_BUDGET: 3.5, // Clean hold 2.48s -> 3.50s (reduced slightly for 9.5-10s cumulative pacing)
   },
   mobile: {
-    FURNITURE_FADE: 0.3,
-    DRAW_START: 0.1,
-    DRAW_DURATION: 2.1, // Draws 0.10s -> 2.20s
-    WORD_FADE_DURATION: 0.22,
-    TAG_FADE_LEAD: 0.35, // Starts at 1.85s
-    TICKER_CROSSFADE_DURATION: 0.25,
-    CENTER_START: 2.15, // Starts at 2.15s
-    CENTER_DURATION: 0.55, // Sharp by 2.70s
-    TOTAL_BUDGET: 4.0, // Clean hold 2.70s -> 4.00s
+    FURNITURE_FADE: 0.25,
+    DRAW_START: 0.08,
+    DRAW_DURATION: 1.45, // Draws 0.08s -> 1.53s
+    WORD_FADE_DURATION: 0.18,
+    TAG_FADE_LEAD: 0.25, // Starts at 1.28s
+    TICKER_CROSSFADE_DURATION: 0.18,
+    CENTER_START: 1.50, // Starts at 1.50s
+    CENTER_DURATION: 0.40, // Sharp by 1.90s
+    TOTAL_BUDGET: 2.6, // Clean hold 1.90s -> 2.60s
   },
 };
 

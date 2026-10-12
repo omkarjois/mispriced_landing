@@ -14,11 +14,13 @@ import {
 export interface StocksEvokeSequenceProps {
   onComplete: () => void;
   ticker?: string;
+  isPaused?: boolean;
 }
 
 export function StocksEvokeSequence({
   onComplete,
-  ticker = "NOW",
+  ticker = "NVDA",
+  isPaused = false,
 }: StocksEvokeSequenceProps) {
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
@@ -42,6 +44,9 @@ export function StocksEvokeSequence({
 
   const cfg = isMobile ? TIMING_CONFIG.mobile : TIMING_CONFIG.desktop;
 
+  const isPausedRef = useRef(isPaused);
+  isPausedRef.current = isPaused;
+
   // Master Clock (single rAF timeline started only after document.fonts.ready)
   useEffect(() => {
     let isCancelled = false;
@@ -58,34 +63,35 @@ export function StocksEvokeSequence({
         return;
       }
 
-      const startTime = performance.now();
+      let lastTime = performance.now();
+      let accumulatedSec = 0;
       let centerTextReported = false;
 
       const frame = (now: number) => {
         if (isCancelled) return;
-        const elapsed = (now - startTime) / 1000;
-        setElapsedSec(elapsed);
+        const delta = (now - lastTime) / 1000;
+        lastTime = now;
 
-        // Dev-time check: measure center text reveal completion
-        const centerEnd = cfg.CENTER_START + cfg.CENTER_DURATION;
-        if (elapsed >= centerEnd && !centerTextReported) {
-          centerTextReported = true;
-          const measuredMs = Math.round(now - startTime);
-          console.log(
-            `[StocksEvokeSequence] Center text fully revealed at ${elapsed.toFixed(2)}s (${measuredMs}ms). Total Budget: ${cfg.TOTAL_BUDGET}s.`
-          );
-          if (elapsed > cfg.TOTAL_BUDGET) {
-            console.warn(
-              `[StocksEvokeSequence] WARNING: Total elapsed ${elapsed.toFixed(2)}s exceeded budget of ${cfg.TOTAL_BUDGET}s!`
+        if (!isPausedRef.current) {
+          accumulatedSec += delta;
+          setElapsedSec(accumulatedSec);
+
+          // Dev-time check: measure center text reveal completion
+          const centerEnd = cfg.CENTER_START + cfg.CENTER_DURATION;
+          if (accumulatedSec >= centerEnd && !centerTextReported) {
+            centerTextReported = true;
+            console.log(
+              `[StocksEvokeSequence] Center text fully revealed at ${accumulatedSec.toFixed(2)}s. Total Budget: ${cfg.TOTAL_BUDGET}s.`
             );
+          }
+
+          if (accumulatedSec >= cfg.TOTAL_BUDGET) {
+            onCompleteRef.current();
+            return;
           }
         }
 
-        if (elapsed < cfg.TOTAL_BUDGET) {
-          animId = requestAnimationFrame(frame);
-        } else {
-          onCompleteRef.current();
-        }
+        animId = requestAnimationFrame(frame);
       };
 
       animId = requestAnimationFrame(frame);
@@ -119,7 +125,7 @@ export function StocksEvokeSequence({
             );
           }
         });
-      }, 4500);
+      }, 3200);
       return () => clearTimeout(assertionTimer);
     }
     return undefined;
@@ -176,27 +182,28 @@ export function StocksEvokeSequence({
         exit={{
           opacity: 0,
           scale: 0.94,
-          filter: "blur(10px)",
-          transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] },
+          filter: "blur(6px)",
+          transition: { duration: 0.22, ease: [0.16, 1, 0.3, 1] },
         }}
-        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         className="relative z-20 flex items-center justify-center w-full max-w-[96vw] xl:max-w-[1600px] 2xl:max-w-[1780px] pointer-events-none"
       >
-        {/* Ticker Identity Chip: ServiceNow Inc · NYSE: NOW */}
+        {/* Ticker Identity Chip: NVIDIA Corp · NASDAQ: NVDA */}
         <div
           aria-hidden="true"
           style={{ opacity: furnitureOpacity }}
-          className="absolute top-2 left-2 sm:top-4 sm:left-6 z-40 flex items-center gap-2.5 sm:gap-3 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-[#0b0f17]/85 backdrop-blur-md border border-white/[0.08] shadow-2xl pointer-events-none transition-opacity duration-300"
+          className="absolute top-2 left-2 sm:top-4 sm:left-6 z-40 flex items-center gap-2.5 sm:gap-3.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-neutral-900/90 backdrop-blur-md border border-white/[0.1] shadow-2xl pointer-events-none transition-opacity duration-300"
         >
-          <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-md bg-white/[0.06] border border-white/10 flex items-center justify-center overflow-hidden shrink-0">
+          {/* Prominent, louder brand logo mark */}
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#76B900]/15 border border-[#76B900]/30 shadow-[0_0_14px_rgba(118,185,0,0.35)] flex items-center justify-center overflow-hidden shrink-0 p-1">
             <CompanyLogo
               ticker={ticker}
-              containerClassName="w-full h-full flex items-center justify-center p-0.5"
-              className="h-full w-full object-contain"
+              containerClassName="w-full h-full flex items-center justify-center"
+              className="h-full w-full object-contain filter drop-shadow-[0_0_4px_rgba(118,185,0,0.5)]"
             />
           </div>
-          <span className="font-display text-xs sm:text-sm font-semibold tracking-tight text-neutral-100">
-            ServiceNow Inc
+          <span className="font-display text-xs sm:text-sm font-semibold tracking-tight text-white">
+            NVIDIA Corp
           </span>
           <span className="font-mono text-xs sm:text-sm text-neutral-300 font-medium tabular-nums">
             {isTickerFinal ? "$139.75" : "$147.45"}
